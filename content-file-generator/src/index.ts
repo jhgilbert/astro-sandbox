@@ -111,5 +111,5 @@ deleteGeneratedContentFiles({
 
 generateContentFiles({
   outDir: GENERATED_CONTENT_DIR,
-  fileCount: 5000,
+  fileCount: 100,
 });
