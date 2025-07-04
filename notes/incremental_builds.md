@@ -28,27 +28,39 @@ Understand more about my options for accomplishing this sort of incremental buil
 
 In dev mode, you can find it at `.astro/data-store.json`. After a production build, you'll find it in `node_modules/.astro/data-store.json` by default, but you can configure your `cacheDir` in `astro.config.mjs` to use a different location.
 
-#### How large is the data store compared to the size of the content directory?
+#### How large is the data store?
+
+So far, the data store comes out to about ~4.5x the size of the original content directory. This assumes that all content is plain Markdown, and that no content lives outside that directory. Neither will be true in real life, so this is a rough estimate.
 
 In a benchmark using ~1000 simulated doc files:
 
-- The content directory is X MB.
-- The data store is X MB.
+- The content directory is 6.3 MB.
+- The data store is 27.7 MB, or about 4.4x the size of the content directory.
 
 In a benchmark using ~5000 simulated doc files:
 
 - The content directory is 31.7 MB.
-- The data store is 143 MB.
+- The data store is 143 MB, or about 4.5x the size of the content directory.
+
+In the Datadog docs site (16,156 files in the content directory at last count):
+
+- The content directory is 150 MB.
+- I'm not able to generate a data store for this content yet, but 4.5x of the current content directory size would be 675 MB.
 
 #### How would I incrementally update a persisted data store?
 
-TODO
-
 For the sake of simplicity, it would be nice if everything I needed could be provided by the data store itself, and by info already available in directories like .git.
 
-The loader could store its last load time as metadata in the store. If the .git modified timestamp of a given file is more recent than that last load time, the content in that file should be loaded again. Otherwise, the file can be skipped.
+The loader could store its last load time as metadata in the store:
 
-I'm not sure whether the MetaStore lives in data-store.json or elsewhere.
+```
+const previousLastModified = meta.get("lastModified");
+meta.set("lastModified", new Date().toISOString());
+```
+
+If the .git modified timestamp of a given file is more recent than that last load time, the content in that file should be loaded again. Otherwise, the file can be skipped.
+
+TODO: Confirm that the collection metadata is also stored in the data-store.json file.
 
 ### What is the fastest way to obtain the modified timestamp of each local content file?
 
@@ -75,8 +87,8 @@ TODO: I'm just looking to understand their conventions around structure, data ty
 - [x] Create a vanilla Astro Starlight site
 - [x] Generate 5K content files of varying size (we'll just start with `.md` extension), broken into directories
 - [x] Add the generated files to a content collection using the OOTB glob loader
-- [x] Benchmark the full cold build (`rm -rf .astro && npx astro build`): 87s
-- [x] Benchmark the warm build: 11s
+- [x] Benchmark the full cold build with ~5000 files (`rm -rf .astro && npx astro build`): 87s
+- [x] Benchmark the warm build with ~5000 files: 11s
 - [ ] Explore the data store to answer open questions
 - [ ] Write a custom loader (no incremental logic for now), and use that instead of the OOTB glob loader
 
