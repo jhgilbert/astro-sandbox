@@ -44,7 +44,11 @@ title: File ${fileNumber}
 description: This is the description for file number ${fileNumber}.
 ---
 
-# File ${fileNumber}\n`;
+# File ${fileNumber}
+
+Here's a UUID you can search if you're just trying to find anything that ANY generated file has impacted: ab5ef099-c1cf-452a-928a-863ee31cf6d2.
+
+`;
 
   const lineCount = getSectionCount(fileNumber);
   for (let i = 0; i < lineCount; i++) {
@@ -111,5 +115,5 @@ deleteGeneratedContentFiles({
 
 generateContentFiles({
   outDir: GENERATED_CONTENT_DIR,
-  fileCount: 100,
+  fileCount: 5000,
 });

@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "cold-build": "rm -rf astro-cache && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
