@@ -1,16 +1,17 @@
 import fs from "fs";
-import path from "path";
 
-const MAX_LINE_COUNT = 3000;
-const MIN_LINE_COUNT = 300;
+const MAX_SECTION_COUNT = 25;
+const MIN_SECTION_COUNT = 4;
 const FILE_PREFIX = "generated_content_file_";
 const GENERATED_CONTENT_DIR =
-  __dirname + "../../vanilla-starlight/src/content/generated";
+  __dirname + "/../../vanilla-starlight/src/content/generated";
 
-function getLineCount(seed: number): number {
+function getSectionCount(seed: number): number {
   const x = Math.sin(seed) * 10000;
   const r = x - Math.floor(x); // [0, 1)
-  return Math.round(MIN_LINE_COUNT + r * (MAX_LINE_COUNT - MIN_LINE_COUNT));
+  return Math.round(
+    MIN_SECTION_COUNT + r * (MAX_SECTION_COUNT - MIN_SECTION_COUNT)
+  );
 }
 
 function buildFileContents(fileNumber: number): string {
@@ -19,12 +20,28 @@ title: File ${fileNumber}
 description: This is the description for file number ${fileNumber}.
 ---
 
-# File ${fileNumber}`;
+# File ${fileNumber}\n`;
 
-  const lineCount = getLineCount(fileNumber);
+  const lineCount = getSectionCount(fileNumber);
   for (let i = 0; i < lineCount; i++) {
-    fileContents += `\nThis is line ${i + 1} of file ${fileNumber}.`;
+    fileContents += `\n## Section ${i} of file ${fileNumber}
+
+This is section ${i} of file ${fileNumber}.
+
+It has a list:
+- [Item 1](https://example.com/item1)
+- **Item 2**
+- *Item 3*
+
+And a code block:
+
+\`\`\`javascript
+console.log("This is a code block in file ${fileNumber}, section ${i}");
+\`\`\`
+
+That's the end of section ${i} in file ${fileNumber}.\n`;
   }
+
   return fileContents;
 }
 
@@ -57,3 +74,12 @@ export function deleteGeneratedContentFiles(p: { dir: string }): void {
   });
   console.log("Deletion complete.");
 }
+
+deleteGeneratedContentFiles({
+  dir: GENERATED_CONTENT_DIR,
+});
+
+generateContentFiles({
+  outDir: GENERATED_CONTENT_DIR,
+  fileCount: 10,
+});
