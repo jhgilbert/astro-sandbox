@@ -41,8 +41,10 @@ I'm just looking to understand their conventions around structure, data types, e
 ## Tasks
 
 - [x] Create a vanilla Astro Starlight site
-- [ ] Generate a lot of content files of varying size (we'll just start with `.md`), and check them in
-- [ ] Familiarize with data-store.json
-- [ ] Write a custom loader (no incremental logic for now), and use that instead of the default
+- [x] Generate 20K content files of varying size (we'll just start with `.md` extension), broken into directories
+- [x] Add the generated files to a content collection using the OOTB glob loader
+- [ ] Benchmark the full build time
+- [ ] Explore data-store.json to answer open questions
+- [ ] Write a custom loader (no incremental logic for now), and use that instead of the OOTB glob loader
 
 [content-layer-blog]: https://astro.build/blog/content-layer-deep-dive/

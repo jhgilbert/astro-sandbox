@@ -14,6 +14,30 @@ function getSectionCount(seed: number): number {
   );
 }
 
+function getDirectoryName(p: {
+  fileNumber: number;
+  filesPerDir: number;
+}): string {
+  return Math.floor((p.fileNumber - 1) / p.filesPerDir + 1).toString();
+}
+
+function getFilePath(p: { outDir: string; fileNumber: number }): string {
+  const greatGrandparentDir = getDirectoryName({
+    fileNumber: p.fileNumber,
+    filesPerDir: 1000,
+  });
+  const grandparentDir = getDirectoryName({
+    fileNumber: p.fileNumber,
+    filesPerDir: 100,
+  });
+  const parentDir = getDirectoryName({
+    fileNumber: p.fileNumber,
+    filesPerDir: 25,
+  });
+
+  return `${p.outDir}/${greatGrandparentDir}/${grandparentDir}/${parentDir}/${FILE_PREFIX}${p.fileNumber}.md`;
+}
+
 function buildFileContents(fileNumber: number): string {
   let fileContents = `---
 title: File ${fileNumber}
@@ -51,25 +75,31 @@ export function generateContentFiles(p: {
 }): void {
   console.log(`Generating content files in directory: ${p.outDir}`);
   console.log(`Number of files to generate: ${p.fileCount}`);
+
   for (let i = 1; i <= p.fileCount; i++) {
-    const fileName = `${p.outDir}/${FILE_PREFIX}${i}.md`;
+    const filePath = getFilePath({
+      outDir: p.outDir,
+      fileNumber: i,
+    });
     const fileContents = buildFileContents(i);
-    console.log(`Writing to ${fileName}`);
-    fs.writeFileSync(fileName, fileContents, "utf8");
+    console.log(`Writing to ${filePath}`);
+    fs.mkdirSync(require("path").dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, fileContents, "utf8");
   }
 }
 
 export function deleteGeneratedContentFiles(p: { dir: string }): void {
-  // traverse the directory and delete files
-  console.log(`Deleting content files in directory: ${p.dir}`);
+  console.log(`Deleting all generated content files in directory: ${p.dir}`);
   const files = fs.readdirSync(p.dir);
   files.forEach((file) => {
     const filePath = `${p.dir}/${file}`;
-    if (fs.statSync(filePath).isFile() && file.startsWith(FILE_PREFIX)) {
-      console.log(`Deleting file: ${filePath}`);
+    if (fs.statSync(filePath).isDirectory()) {
+      deleteGeneratedContentFiles({ dir: filePath });
+      if (fs.readdirSync(filePath).length === 0) {
+        fs.rmdirSync(filePath);
+      }
+    } else if (fs.statSync(filePath).isFile() && file.startsWith(FILE_PREFIX)) {
       fs.unlinkSync(filePath);
-    } else {
-      console.log(`Skipping non-file: ${filePath}`);
     }
   });
   console.log("Deletion complete.");
@@ -81,5 +111,5 @@ deleteGeneratedContentFiles({
 
 generateContentFiles({
   outDir: GENERATED_CONTENT_DIR,
-  fileCount: 10,
+  fileCount: 5000,
 });
