@@ -7,7 +7,7 @@ import buildMetadataPlugin from "./plugins/astro-build-metadata";
 export default defineConfig({
   cacheDir: "astro-cache",
   integrations: [
-    // buildMetadataPlugin(),
+    buildMetadataPlugin(),
     starlight({
       title: "My Docs",
       social: [
