@@ -2,7 +2,7 @@
 
 ## Context
 
-I read a blog post from Astro ((Content Layer: A Deep Dive)[content-layer-blog]) that made me want to explore incremental builds more.
+I read a blog post from Astro ([Content Layer: A Deep Dive][content-layer-blog]) that made me want to explore incremental builds more.
 
 Key takeaways from the post:
 
