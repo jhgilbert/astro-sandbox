@@ -89,7 +89,7 @@ TODO: I'm just looking to understand their conventions around structure, data ty
 - [x] Create a vanilla Astro Starlight site
 - [x] Generate 5K content files of varying size (we'll just start with `.md` extension), broken into directories
 - [x] Add the generated files to a content collection using the OOTB glob loader
-- [x] Benchmark the full cold build with ~5000 files (`rm -rf .astro && npx astro build`): 87s
+- [x] Benchmark the full cold build with ~5000 files (delete the cached file and `npx astro build`): 87s
 - [x] Benchmark the warm build with ~5000 files: 11s
 - [ ] Explore the data store to answer open questions
 - [ ] Write a custom loader (no incremental logic for now), and use that instead of the OOTB glob loader
