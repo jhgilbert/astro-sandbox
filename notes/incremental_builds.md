@@ -64,19 +64,21 @@ TODO: Confirm that the collection metadata is also stored in the data-store.json
 
 ### What is the fastest way to obtain the modified timestamp of each local content file?
 
-TODO: I'm assuming I could use .git, but I'm interested in knowing how performant that is at scale.
+I can get the last modified timestamp of everything in the repo in one synchronous batch call, and then filter those results for just file paths matching a provided regex.
 
 #### What is the most performant way to persist a large data-store.json file between builds in ephemeral environments?
 
-TODO
+It's probably just something like S3.
 
-#### What is the most performant way to query a large data-store.json file?
+#### What is the most performant way to query when the last build ran?
 
-TODO
+This timestamp can just be written to the collection's meta, and retrieved from there on the next run.
 
 ### How much faster is an incremental Astro build vs. a whole build?
 
-TODO: How much faster is it to build just one updated file versus building all of the files? This is a benchmark for a local build, so it's only intended to benchmark the diff between the two types, not the actual build time as it would run in CI.
+The setup required for an incremental build might not be much faster than the full build. For example, if we have to download a 500 MB data-store.json file at the beginning of the build every time, and then upload a 500 MB data-store.json in a post-build job at the end, will that be much faster than just building everything again?
+
+Lots of other steps must happen regardless of whether the build is incremental, such as installing Node packages.
 
 ### How do content loaders work?
 
